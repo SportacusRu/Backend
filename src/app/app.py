@@ -1,8 +1,11 @@
-from fastapi import FastAPI, APIRoute
+from fastapi import FastAPI
+from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
-from api.router import api_router
-from middlewares import AuthMiddleware
-from config import config
+
+from src.app.api.router import api_router
+from src.app.middlewares import AuthMiddleware
+from src.app.config import config
+
 
 def custom_generate_unique_id(route: APIRoute) -> str: 
     return f"{route.tags[0]}-{route.name}"
