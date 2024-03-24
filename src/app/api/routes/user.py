@@ -17,10 +17,14 @@ def update_photo() -> Any:
 def update_name() -> Any: 
     return ""
 
-@router.post("/updatePassword", description="Update password of user")
+@router.post("/updatePassword", description="Create a request of update password")
 def update_password() -> Any: 
     return ""
 
+@router.post("/setNewPassword", description="Update password of user")
+def set_new_password():
+    return ""
+
 @router.post("/ban", description="Ban user (special method)")
-def update_password() -> Any: 
+def ban() -> Any: 
     return ""
