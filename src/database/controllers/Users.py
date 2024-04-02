@@ -4,6 +4,7 @@ from typing import List, Union
 from .BaseController import BaseController
 from bcrypt import hashpw, gensalt
 
+from random import randint
 
 class UsersController(BaseController):
     """
@@ -60,6 +61,18 @@ class UsersController(BaseController):
         return await UsersDocument.find_one(UsersDocument.user_id == user_id)
 
     @staticmethod
+    async def find_by_email(email: str) -> Union[UsersDocument, None]:
+        """
+        Get user by email
+
+        :param email: User email
+        :type: email: str
+        :return: Union[UsersDocument, None]
+        """
+        return await UsersDocument.find_one(UsersDocument.email == email)
+
+
+    @staticmethod
     async def get_verify_link(user_id: int) -> str:
         """
         Generate and return verify link
@@ -87,6 +100,19 @@ class UsersController(BaseController):
         """
         user = UsersController.find_by_id(user_id)
         user.blocked = True
+
+    @staticmethod
+    async def remove(user_id: int) -> None:
+        """
+        Delete user from database
+
+        :param user_id: User ID
+        :type user_id: int
+
+        :return: None
+        """
+        user = await UsersController.find_by_id(user_id)
+        await user.delete()
 
     @staticmethod
     async def like(user_id: int, place_id: int) -> None:
@@ -141,6 +167,7 @@ class UsersController(BaseController):
         new_id = await UsersController._get_new_id(UsersDocument, "user_id")
         hashed_password = hashpw(password.encode(), gensalt()).decode()
         auth_key = hashpw((name+password+email).encode(), gensalt()).decode()
+        email_code = randint(1000, 9999)
 
         user = UsersDocument(
             user_id=new_id,
@@ -153,7 +180,8 @@ class UsersController(BaseController):
             complaint_count=0,
             auth_key=auth_key,
             verify_link=None,
-            photo=None
+            photo=None,
+            email_code=email_code
         )
 
         await user.insert()

@@ -14,3 +14,4 @@ class UsersDocument(Document):
     photo: Optional[str]
     auth_key: Optional[str]
     verify_link: Optional[str]
+    email_code: Optional[int]

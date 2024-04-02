@@ -16,4 +16,5 @@ uvicorn src.app.app:app
 ### ENV 
 ```
 APP_DATABASE_LINK = "mongodb_link"
+MODERATOR_KEY = "MODERATOR KEY"
 ```
