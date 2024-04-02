@@ -1,7 +1,4 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import StreamingResponse, JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from datetime import datetime, timedelta
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

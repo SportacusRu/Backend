@@ -6,15 +6,24 @@ from src.app.api.router import api_router
 from src.app.middlewares import AuthMiddleware
 from src.app.config import config
 
+from src.database import Database
+from contextlib import asynccontextmanager
+
 
 def custom_generate_unique_id(route: APIRoute) -> str: 
     return f"{route.tags[0]}-{route.name}"
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await Database.init(config.APP_DATABASE_LINK)
+    yield
+
 app = FastAPI(
     title=config.PROJECT_NAME,
     generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan
 )
-
+    
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

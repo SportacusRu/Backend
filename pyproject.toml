@@ -8,13 +8,17 @@ license = "GNU General Public License v3.0"
 [tool.poetry.dependencies]
 python = "^3.8"
 email-validator = "^2.1.1"
+beanie = "^1.25.0"
+bcrypt = "^4.1.2"
+python-decouple = "^3.8"
+pydantic = "^2.6.4"
+typing-extensions = "^4.10.0"
 
 [tool.poetry.scripts]
 start = "src.main:start"
 
 [tool.poetry.dev-dependencies]
 fastapi = "^0.110.0"
-motor = "^3.4.0"
 uvicorn = "^0.29.0"
 
 [build-system]
