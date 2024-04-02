@@ -23,7 +23,7 @@ class ComplaintsController:
         :return: Union[ComplaintsDocument, None]
         """
         return await ComplaintsDocument.find(
-            ComplaintsDocument.report is None
+            ComplaintsDocument.report == None
         ).sort(("$natural", -1)).limit(1).first_or_none()
 
     @staticmethod
@@ -37,7 +37,7 @@ class ComplaintsController:
         """
         complaint = await ComplaintsController.get_last_without_report()
 
-        if report is None: 
+        if complaint is None: 
             raise ValueError("Last report is not found")
         
         complaint.report = report
