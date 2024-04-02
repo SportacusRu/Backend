@@ -11,3 +11,9 @@ poetry run uvicorn src.app.app:app
 pip install -r requirements.txt
 uvicorn src.app.app:app
 ```
+
+
+### ENV 
+```
+APP_DATABASE_LINK = "mongodb_link"
+```
