@@ -5,6 +5,7 @@ pydantic
 jose
 email-validator
 python-decouple
+aiosmtplib
 bcrypt~=4.1.2
 typing_extensions
 starlette~=0.36.3
