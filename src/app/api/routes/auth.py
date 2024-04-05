@@ -28,9 +28,9 @@ async def register(name:str, email: str, password: str) -> Any:
         await Database.users.remove(user.user_id)
     
     user = await Database.users.add(name, email, password)
-    EmailSender.send_verification_code(email, VERIFY_ENDPOINT + user.verify_link)
+    EmailSender.send_verification_code(email, user.email_code)
     
-    return {"status": "ok"}
+    return {"status": "okв"}
     
 
 @router.post("/login", description="Authorizes the user")
