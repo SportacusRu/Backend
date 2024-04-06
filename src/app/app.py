@@ -31,6 +31,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.add_middleware(BlockMiddleware)
 app.add_middleware(ModeratorAuthMiddleware)
 
