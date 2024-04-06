@@ -2,6 +2,7 @@ from src.database.controllers import (
     UsersController, ComplaintsController, 
     ReviewsController, PlacesController
 )
+
 from src.database.models import (
     UsersDocument, ComplaintsDocument, 
     ReviewsDocument, PlacesDocument
