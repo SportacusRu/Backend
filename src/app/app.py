@@ -15,7 +15,7 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # await Database.init(config.APP_DATABASE_LINK)
+    await Database.init(config.APP_DATABASE_LINK)
     yield
 
 app = FastAPI(

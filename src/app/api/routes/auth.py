@@ -1,22 +1,16 @@
 
+from random import randint
 from typing import Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response, status, Request
 
 from src.app.config.config import VERIFY_ENDPOINT
 from src.app.email.email import EmailSender
 from src.database import Database
 
+from bcrypt import checkpw
+
 router = APIRouter()
 
-users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
 
 @router.post("/register", description="Register a new user")
 async def register(name:str, email: str, password: str) -> Any: 
@@ -27,20 +21,95 @@ async def register(name:str, email: str, password: str) -> Any:
     elif user is not None:
         await Database.users.remove(user.user_id)
     
-    user = await Database.users.add(name, email, password)
+    user = await Database.users.add(name, password, email)
     EmailSender.send_verification_code(email, user.email_code)
     
-    return {"status": "okв"}
+    return Response(status_code=200, headers={
+        "Set-Cookie": f"auth_key={user.auth_key}; path=/; httponly"
+    })
     
 
 @router.post("/login", description="Authorizes the user")
-def login() -> Any: 
-    return ""
+async def login(email: str, password: str) -> Any: 
+    user = await Database.users.find_by_email(email)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password"
+        )
+
+    if not checkpw(password.encode(), user.password.encode()):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect email or password"
+        )
+
+    if user.auth_key is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email not verified"
+        )
+    
+    return Token()
 
 @router.post("/validateCodeConfirm", description="Validate a code")
-def validate_code_confirm() -> Any: 
-    return ""
+async def validate_code_confirm(request: Request, email: str, code: int) -> Any: 
+    user = await Database.users.find_by_email(email)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not found"
+        )
+
+    if user.email_code is not None and user.email_code != code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Wrong code"
+        )
+    elif user.email_code is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Code already sent"
+        )
+    elif user.email_code is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Code not found"
+        )
+    
+    if user.email_code == code and user.auth_key == request.cookies.get("auth_key"):
+        user.auth_key = None
+        user.email_code = None
+        await user.save()
+
+    return Token()
 
 @router.post("/repeatCodeConfirm", description="Repeat a code")
-def repeat_code_confirm() -> Any: 
-    return ""
+async def repeat_code_confirm(request: Request, email: str) -> Any: 
+    auth_key = request.cookies.get("auth_key")
+    user = await Database.users.find_by_email(email)
+    print(user)
+    if user is None: 
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not found"
+        )
+    
+    if auth_key is None and user.auth_key != auth_key:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Auth key not found or expired"
+        )
+    
+    if user.email_code is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Code not found"
+        )
+    
+    user.email_code = randint(1000, 9999)
+    await user.save()
+    EmailSender.send_verification_code(email, user.email_code)
+    return Response(status_code=200)
