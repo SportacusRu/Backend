@@ -15,3 +15,6 @@ MAIL_USERNAME = config("MAIL_USERNAME")
 MAIL_PASSWORD = config("MAIL_PASSWORD")
 
 VERIFY_ENDPOINT = config("VERIFY_ENDPOINT")
+
+VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html").read()
+UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html").read()

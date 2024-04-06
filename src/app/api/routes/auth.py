@@ -3,8 +3,7 @@ from random import randint
 from typing import Any
 from fastapi import APIRouter, HTTPException, Response, status, Request
 
-from src.app.config.config import VERIFY_ENDPOINT
-from src.app.email.email import EmailSender
+from src.app.email import EmailSender
 from src.database import Database
 
 from bcrypt import checkpw
@@ -22,7 +21,7 @@ async def register(name:str, email: str, password: str) -> Any:
         await Database.users.remove(user.user_id)
     
     user = await Database.users.add(name, password, email)
-    EmailSender.send_verification_code(email, user.email_code)
+    await EmailSender.send_verification_code(email, user.email_code)
     
     return Response(status_code=200, headers={
         "Set-Cookie": f"auth_key={user.auth_key}; path=/; httponly"
@@ -90,7 +89,7 @@ async def validate_code_confirm(request: Request, email: str, code: int) -> Any:
 async def repeat_code_confirm(request: Request, email: str) -> Any: 
     auth_key = request.cookies.get("auth_key")
     user = await Database.users.find_by_email(email)
-    print(user)
+
     if user is None: 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -111,5 +110,5 @@ async def repeat_code_confirm(request: Request, email: str) -> Any:
     
     user.email_code = randint(1000, 9999)
     await user.save()
-    EmailSender.send_verification_code(email, user.email_code)
+    await EmailSender.send_verification_code(email, user.email_code)
     return Response(status_code=200)

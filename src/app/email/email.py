@@ -1,42 +1,42 @@
+from aiosmtplib import SMTP
 from email.mime.text import MIMEText
-from smtplib import SMTP_SSL
 
 from jinja2 import Template
 
+
 from src.app.config.config import (
-    MAIL_FROM, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
+    MAIL_FROM, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD,
+    VERIFICATION_CODE_HTML, UPDATE_PASSWORD_HTML
 )
 
-verificationCode = Template(open("src/app/email/templates/verification_code.html").read())
-updatePassword = Template(open("src/app/email/templates/update_password.html").read())
+verificationCode = Template(VERIFICATION_CODE_HTML, enable_async=True)
+updatePassword = Template(UPDATE_PASSWORD_HTML, enable_async=True)
 
 class EmailSender:
+    client = SMTP(hostname=MAIL_SERVER, port=MAIL_PORT, use_tls=True, validate_certs=False, username=MAIL_USERNAME, password=MAIL_PASSWORD)
+
     @staticmethod
-    def send(email: str, subject: str, html_template) -> None:
+    async def send(email: str, subject: str, html_template) -> None:
         msg = MIMEText(html_template, "html")
         msg['Subject'] = subject
         msg['From'] = f'Sportacus <{MAIL_FROM}>'
         msg['To'] = email
 
-        server = SMTP_SSL(MAIL_SERVER, MAIL_PORT)
-        server.login(MAIL_USERNAME, MAIL_PASSWORD)
+        async with EmailSender.client:
+            await EmailSender.client.send_message(msg)
 
-        # Send the email
-        server.send_message(msg)
-        server.quit()
-    
-    @staticmethod
-    def send_verification_code(email: str, code: int) -> None:
-        verificationCodeHTML = verificationCode.render(code=code)
+    @staticmethod  
+    async def send_verification_code(email: str, code: int) -> None:
+        verificationCodeHTML = await verificationCode.render_async(code=code)
 
-        EmailSender.send(
+        await EmailSender.send(
             email, f"Код подтверждения для email: {code}", verificationCodeHTML    
         )
 
     @staticmethod
-    def send_update_password(email, password_link) -> None:
-        updatePasswordHTML = updatePassword.render(password_link=password_link)
+    async def send_update_password(email: str, password_link: str) -> None:
+        updatePasswordHTML = await updatePassword.render_async(password_link=password_link)
 
-        EmailSender.send(
+        await EmailSender.send(
             email, "Ссылка на изменение пароля", updatePasswordHTML
         )
