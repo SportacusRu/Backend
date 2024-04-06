@@ -13,6 +13,7 @@ from contextlib import asynccontextmanager
 def custom_generate_unique_id(route: APIRoute) -> str: 
     return f"{route.tags[0]}-{route.name}"
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await Database.init(config.APP_DATABASE_LINK)
