@@ -29,7 +29,7 @@ async def add() -> Any:
 
 
 @router.post("/remove", description="remove place (special method)")
-async def remove(moderator_key, place_id):
+async def remove(moderator_key: str, place_id):
     await Database.places.remove(place_id)
     return Response(status_code=200)
 
@@ -38,6 +38,7 @@ async def remove(moderator_key, place_id):
 async def edit(moderator_key: str, place_id: int, title=None, description=None, category=None, filters=None):
     await Database.places.update(place_id, title, description, category, filters)
     return Response(status_code=200)
+
 
 @router.post("/like", description="Add place in user liked list")
 async def like():

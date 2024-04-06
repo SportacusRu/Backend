@@ -23,7 +23,7 @@ class PlacesController(BaseController):
         :return: None
         """
         if value is not None:
-            setattr(PlacesDocument, name, value)
+            setattr(place, name, value)
 
     @staticmethod
     async def get_all() -> List[PlacesDocument]:
