@@ -110,6 +110,21 @@ trio = ["trio (>=0.23)"]
 wmi = ["wmi (>=1.5.1)"]
 
 [[package]]
+name = "ecdsa"
+version = "0.18.0"
+description = "ECDSA cryptographic signature library (pure python)"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[package.dependencies]
+six = ">=1.9.0"
+
+[package.extras]
+gmpy = ["gmpy"]
+gmpy2 = ["gmpy2"]
+
+[[package]]
 name = "email-validator"
 version = "2.1.1"
 description = "A robust email address syntax and deliverability validation library."
@@ -179,17 +194,6 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
-name = "jose"
-version = "1.0.0"
-description = "An implementation of the JOSE draft"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-pycrypto = ">=2.6"
-
-[[package]]
 name = "lazy-model"
 version = "0.2.0"
 description = ""
@@ -230,12 +234,12 @@ test = ["pytest (>=7)", "mockupdb", "tornado (>=5)", "aiohttp (!=3.8.6)", "motor
 zstd = ["pymongo[zstd] (>=4.5,<5)"]
 
 [[package]]
-name = "pycrypto"
-version = "2.6.1"
-description = "Cryptographic modules for Python."
+name = "pyasn1"
+version = "0.6.0"
+description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 
 [[package]]
 name = "pydantic"
@@ -291,6 +295,43 @@ description = "Strict separation of settings from code."
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "python-jose"
+version = "3.3.0"
+description = "JOSE implementation in Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+ecdsa = "!=0.15"
+pyasn1 = "*"
+rsa = "*"
+
+[package.extras]
+cryptography = ["cryptography (>=3.4.0)"]
+pycrypto = ["pycrypto (>=2.6.0,<2.7.0)", "pyasn1"]
+pycryptodome = ["pycryptodome (>=3.3.1,<4.0.0)", "pyasn1"]
+
+[[package]]
+name = "rsa"
+version = "4.9"
+description = "Pure-Python RSA implementation"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4"
+
+[package.dependencies]
+pyasn1 = ">=0.1.3"
+
+[[package]]
+name = "six"
+version = "1.16.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "sniffio"
@@ -350,7 +391,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3a873a37ead60586c997dcea7ce9561e4f9000b44b43e9759dfe7d9969e3adae"
+content-hash = "50c700e13777c65accfd9221973ae88a9318bbfc704edd2222d513cf276078fb"
 
 [metadata.files]
 aiosmtplib = []
@@ -361,21 +402,24 @@ beanie = []
 click = []
 colorama = []
 dnspython = []
+ecdsa = []
 email-validator = []
 exceptiongroup = []
 fastapi = []
 h11 = []
 idna = []
 jinja2 = []
-jose = []
 lazy-model = []
 markupsafe = []
 motor = []
-pycrypto = []
+pyasn1 = []
 pydantic = []
 pydantic-core = []
 pymongo = []
 python-decouple = []
+python-jose = []
+rsa = []
+six = []
 sniffio = []
 starlette = []
 toml = []
