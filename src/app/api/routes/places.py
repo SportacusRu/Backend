@@ -1,8 +1,9 @@
 import json
-from typing import Any, Annotated
+from typing import Any
+from typing_extensions import Annotated
 from fastapi import APIRouter, HTTPException, status, Response, Depends
 
-from src.app.api.routes.auth import get_current_active_user
+from src.app.api.extensions.auth import get_current_active_user
 from src.database.controllers import PlacesController
 from src.database.models import UsersDocument
 
@@ -27,7 +28,9 @@ async def get_recommended_place() -> Any:
 
 
 @router.post("/add", description="Add a new place")
-async def add(current_user: Annotated[UsersDocument, Depends(get_current_active_user)]) -> Any:
+async def add(
+    current_user: Annotated[UsersDocument, Depends(get_current_active_user)]
+) -> Any:
     return ""
 
 

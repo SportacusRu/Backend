@@ -4,7 +4,6 @@ uvicorn
 pydantic
 python-jose
 python-multipart
-passlib
 email-validator
 python-decouple
 aiosmtplib
