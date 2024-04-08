@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 
 from src.app.api.router import api_router
 from src.app.middlewares import BlockMiddleware, ModeratorAuthMiddleware
@@ -8,6 +9,8 @@ from src.app.config import config
 
 from src.database import Database
 from contextlib import asynccontextmanager
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 def custom_generate_unique_id(route: APIRoute) -> str: 

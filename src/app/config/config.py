@@ -3,7 +3,8 @@ from decouple import config
 
 APP_DATABASE_LINK = config("APP_DATABASE_LINK")
 MODERATOR_KEY = config("MODERATOR_KEY")
-PROJECT_NAME="Sportacus"
+ALGORITHM = "HS256"
+PROJECT_NAME = "Sportacus"
 
 JWT_SECRET_KEY = config("JWT_SECRET_KEY")
 
@@ -18,5 +19,5 @@ MAIL_PASSWORD = config("MAIL_PASSWORD")
 
 VERIFY_ENDPOINT = config("VERIFY_ENDPOINT")
 
-VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html").read()
-UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html").read()
+VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html", encoding='utf-8').read()
+UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html", encoding='utf-8').read()

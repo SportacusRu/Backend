@@ -2,7 +2,9 @@ beanie~=1.25.0
 fastapi~=0.110.0
 uvicorn
 pydantic
-jose
+python-jose
+python-multipart
+passlib
 email-validator
 python-decouple
 aiosmtplib
