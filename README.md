@@ -15,6 +15,14 @@ uvicorn src.app.app:app
 
 ### ENV 
 ```
-APP_DATABASE_LINK = "mongodb_link"
-MODERATOR_KEY = "MODERATOR KEY"
+APP_DATABASE_LINK="mongodb_link"
+MODERATOR_KEY="MODERATOR_KEY"
+
+MAIL_FROM="example@mail.com"
+MAIL_SERVER="smtp.mail.com"
+MAIL_PORT="465"
+MAIL_USERNAME="example@mail.com"
+MAIL_PASSWORD="password"
+
+VERIFY_ENDPOINT="https://site/verify_email/"
 ```
