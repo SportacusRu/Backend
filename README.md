@@ -17,6 +17,7 @@ uvicorn src.app.app:app
 ```
 APP_DATABASE_LINK="mongodb_link"
 MODERATOR_KEY="MODERATOR_KEY"
+JWT_SECRET_KEY="SECRET KEY"
 
 MAIL_FROM="example@mail.com"
 MAIL_SERVER="smtp.mail.com"
