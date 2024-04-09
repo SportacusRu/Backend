@@ -4,7 +4,8 @@ EMAIL_REGEXP = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
 
 
 def validate_password(password: str) -> bool:
-    return len(password) >= 8
+    length = len(password)
+    return 4 <= length <= 100
 
 
 def validate_email(email: str) -> bool: 
@@ -12,12 +13,15 @@ def validate_email(email: str) -> bool:
 
 
 def validate_name(name: str) -> bool:
-    return len(name) >= 3
+    length = len(name)
+    return 4 <= length <= 24
 
 
 def validate_review_text(text: str) -> bool:
-    return len(text) >= 3
+    length = len(text)
+    return 4 <= length <= 100
 
 
 def validate_complaint_text(text: str) -> bool:
-    return len(text) >= 3
+    length = len(text)
+    return 4 <= length <= 100
