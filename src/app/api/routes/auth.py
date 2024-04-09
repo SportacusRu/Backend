@@ -9,17 +9,28 @@ from src.app.api.models.tokens import Token
 from src.app.email import EmailSender
 from src.database import Database
 from src.app.api.extensions.tokens import create_token
+from src.app.api.extensions.validate import validate_email, validate_name, validate_password
 
 router = APIRouter()
 
 @router.post("/register", description="Register a new user")
 async def register(name: str, email: str, password: str) -> Any:
+    valid_check = validate_name(name) and validate_email(email) and validate_password(password)
+    if not(valid_check):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No valid fields: name, email or password"
+        )
     user = await Database.users.find_by_email(email)
 
     if user is not None and user.auth_key is None:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
     elif user is not None:
         await Database.users.remove(user.user_id)
+
     
     user = await Database.users.add(name, password, email)
     await EmailSender.send_verification_code(email, user.email_code)
