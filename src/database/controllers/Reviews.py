@@ -21,6 +21,7 @@ class ReviewsController(BaseController):
         """
         return await ReviewsDocument.find(ReviewsDocument.place_id == place_id).to_list()
 
+    
     @staticmethod
     async def find_by_id(review_id: int) -> Union[ReviewsDocument, None]:
         """

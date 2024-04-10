@@ -1,8 +1,10 @@
+from http.client import HTTPException
 import json
 from typing import Any
 from typing_extensions import Annotated
-from fastapi import APIRouter, Response, Depends
+from fastapi import APIRouter, Response, Depends, status
 
+from src.app.api.extensions.validate import validate_place_title, validate_review_text
 from src.database.models.Users import UsersDocument
 from src.app.api.extensions.auth import get_current_active_user
 from src.database import Database
@@ -31,8 +33,13 @@ async def get_recommended_place() -> Any:
 async def add(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     title: str, geo: str, description: str, category: str, filters_list: list
-
 ) -> Any:
+    check = validate_place_title(title) and validate_review_text(description)
+    if not(check): 
+        return HTTPException(
+            status.HTTP_400_BAD_REQUEST, 
+            detail="No valid fields: title, geo, description or category"
+        )
     filters_list = set(filters_list)
     await Database.places.add(
         current_user.user_id, 

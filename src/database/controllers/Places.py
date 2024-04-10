@@ -1,6 +1,8 @@
 from src.database.models import PlacesDocument
 from typing import List, Any, MutableSet, Union
 
+from beanie.operators import In
+
 from .BaseController import BaseController
 
 
@@ -33,6 +35,22 @@ class PlacesController(BaseController):
         :return: List[PlacesDocument]
         """
         return await PlacesDocument.find_all().to_list()
+    
+    @staticmethod
+    async def filter(filters_list: MutableSet[int], category: str) -> List[PlacesDocument]:
+        """
+        Return a filtered places
+
+        :param filters_list: place filters
+        :type: filters_list: MutableSet[int]
+        :param category: place category
+        :type: category: str
+        
+        :return: List[PlacesDocument]
+        """
+        return await PlacesDocument.find_all(
+            In(PlacesDocument.filters_list, filters_list), category == category
+        ).to_list()
 
     @staticmethod
     async def find_by_id(place_id: int) -> Union[PlacesDocument, None]:

@@ -16,6 +16,9 @@ def validate_name(name: str) -> bool:
     length = len(name)
     return 4 <= length <= 24
 
+def validate_place_title(text: str) -> bool:
+    length = len(text)
+    return 4 <= length <= 100
 
 def validate_review_text(text: str) -> bool:
     length = len(text)
