@@ -32,6 +32,18 @@ class ReviewsController(BaseController):
         :return: Union[ReviewsDocument, None]
         """
         return await ReviewsDocument.find_one(ReviewsDocument.review_id == review_id)
+    
+    @staticmethod
+    async def find_by_user_id(user_id: int) -> List[ReviewsDocument]:
+        """
+        Find review by user ID
+
+        :param user_id: user ID
+        :type: user_id: int
+
+        :return: List[ReviewsDocument]
+        """
+        return await ReviewsDocument.find(ReviewsDocument.user_id == user_id).to_list()
 
     @staticmethod
     async def remove(review_id: int) -> None:

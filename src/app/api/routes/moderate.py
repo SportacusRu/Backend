@@ -1,10 +1,12 @@
-from http.client import HTTPException
 from typing import Any, Optional
-from fastapi import APIRouter, status
+from typing_extensions import Annotated
+from fastapi import APIRouter, Depends, Response
+from src.app.api.extensions.auth import get_current_active_user
+from src.database.models.Users import UsersDocument
 from src.database import Database
 from src.app.api.models import ComplaintGet
 
-from src.app.config.config import REVIEW, PLACE, MODERATOR_KEY
+from src.app.config.config import REVIEW, PLACE
 
 
 router = APIRouter()
@@ -42,12 +44,18 @@ async def add(
     data: str, 
     review_id: Optional[int], 
     place_id: Optional[int], 
-    current_user
-) -> Any:
-    return ""
+    current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
+) -> Response:
+    await Database.complaints.add(
+        current_user.user_id,
+        data,
+        review_id,
+        place_id
+    )
+    return Response(status_code=200)
 
 @router.post("/report", description="Create a report (special method)")
-async def report(moderator_key: str, report: str) -> Any:
+async def report(moderator_key: str, report: str) -> str:
     try:
         await Database.complaints.update_last(report)
     except ValueError:
