@@ -1,6 +1,5 @@
 from decouple import config
 
-
 APP_DATABASE_LINK = config("APP_DATABASE_LINK")
 MODERATOR_KEY = config("MODERATOR_KEY")
 ALGORITHM = "HS256"
@@ -21,3 +20,18 @@ VERIFY_ENDPOINT = config("VERIFY_ENDPOINT")
 
 VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html", encoding='utf-8').read()
 UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html", encoding='utf-8').read()
+
+PLACES_FILTERS = set(
+    "турники", "брусья", "велотренажер", "шагомер",
+    "степпер", "маятник", "лыжный тренажер", "твистер", "беговые дорожки",
+    "стадион", "парк с возможностью бега по нему", "волейбольная сетка",
+    "баскетбольное кольцо", "теннисный стол", "площадка для большого тенниса",
+    "футбольные ворота", "хоккейный корт", "жим сидя от груди",
+    "жим ногами", "гребля", "сгибание ног",
+    "вертикальная тяга", "гиперэкстензия", "лыжная трасса",
+)
+
+PLACE_CATEGORIES = set(
+    "уличные тренажеры", "спортивные игры",
+    "воркаут", "бег", "зимние виды спорта",
+)
