@@ -4,7 +4,7 @@ from typing import Any
 from typing_extensions import Annotated
 from fastapi import APIRouter, Response, Depends, status
 
-from src.app.api.extensions.validate import validate_place_title, validate_review_text
+from src.app.api.extensions.validate import validate_place_title, validate_review_text, validate_place_category, validate_place_filters
 from src.database.models.Users import UsersDocument
 from src.app.api.extensions.auth import get_current_active_user
 from src.database import Database
@@ -34,13 +34,18 @@ async def add(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     title: str, geo: str, description: str, category: str, filters_list: list
 ) -> Any:
-    check = validate_place_title(title) and validate_review_text(description)
-    if not(check): 
+
+    filters_list = set(filters_list)
+    check = (validate_place_title(title)
+             and validate_review_text(description)
+             and validate_place_category(category)
+             and validate_place_filters(filters_list))
+    if not check:
         return HTTPException(
             status.HTTP_400_BAD_REQUEST, 
-            detail="No valid fields: title, geo, description or category"
+            detail="Some of fields aren't valid: title, geo, description, category or filters"
         )
-    filters_list = set(filters_list)
+
     await Database.places.add(
         current_user.user_id, 
         title, geo, description,
