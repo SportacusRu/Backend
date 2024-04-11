@@ -13,7 +13,7 @@ EMAIL_REGEXP = ("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-
 
 def validate_password(password: str) -> bool:
     length = len(password)
-    return 4 <= length <= 100
+    return 6 <= length <= 100
 
 
 def validate_email(email: str) -> bool: 
@@ -22,12 +22,12 @@ def validate_email(email: str) -> bool:
 
 def validate_name(name: str) -> bool:
     length = len(name)
-    return 4 <= length <= 24
+    return 4 <= length <= 20
 
 
 def validate_place_title(text: str) -> bool:
     length = len(text)
-    return 4 <= length <= 100
+    return 4 <= length <= 20
 
 
 def validate_place_filters(filters: MutableSet[str]) -> bool:
@@ -45,9 +45,9 @@ def validate_place_category(category: str) -> bool:
 
 def validate_review_text(text: str) -> bool:
     length = len(text)
-    return 4 <= length <= 100
+    return 10 <= length <= 200
 
 
 def validate_complaint_text(text: str) -> bool:
     length = len(text)
-    return 4 <= length <= 100
+    return 10 <= length <= 200
