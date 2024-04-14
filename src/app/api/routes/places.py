@@ -1,9 +1,10 @@
 from http.client import HTTPException
-import json
-from typing import Any
+
+from typing import Any, List, Union
 from typing_extensions import Annotated
 from fastapi import APIRouter, Response, Depends, status
 
+from src.database.models.Places import PlacesDocument
 from src.app.api.extensions.validate import validate_place_title, validate_review_text, validate_place_category, validate_place_filters
 from src.database.models.Users import UsersDocument
 from src.app.api.extensions.auth import get_current_active_user
@@ -13,19 +14,21 @@ router = APIRouter()
 
 
 @router.get("/get", description="Get list of places")
-async def get():
+async def get() -> List[PlacesDocument]:
     places = await Database.places.get_all()
-    return json.dumps(places)
+    return places
 
 
 @router.get("/getById", description="Get information about place")
-async def get_by_id(place_id: int):
-    current_place = Database.places.find_by_id(place_id)
-    return json.dumps(current_place)
+async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
+    current_place = await Database.places.find_by_id(place_id)
+    return current_place
 
 
 @router.get("/getRecommendedPlace", description="Get recommended place")
-async def get_recommended_place() -> Any: 
+async def get_recommended_place(
+    current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
+) -> Any: 
     return ""
 
 

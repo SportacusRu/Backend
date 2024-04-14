@@ -51,3 +51,6 @@ def validate_review_text(text: str) -> bool:
 def validate_complaint_text(text: str) -> bool:
     length = len(text)
     return 10 <= length <= 200
+
+def validate_grade(rating: int) -> bool:
+    return 1 <= rating <= 5
