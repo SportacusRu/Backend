@@ -35,10 +35,10 @@ async def get_recommended_place(
 @router.post("/add", description="Add a new place")
 async def add(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
-    title: str, geo: str, description: str, category: str, filters_list: list
-) -> Any:
-
-    filters_list = set(filters_list)
+    title: str, geo: str, description: str, category: str, filters_list: str
+) -> Response:
+    # 1,2,3,4,5
+    filters_list = set(filters_list.split(","))
     check = (validate_place_title(title)
              and validate_review_text(description)
              and validate_place_category(category)
