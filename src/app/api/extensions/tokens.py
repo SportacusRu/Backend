@@ -12,7 +12,7 @@ def encode_user(data: dict, expires_delta: Union[timedelta, None] = None):
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expire = datetime.now(timezone.utc) + timedelta(hours=48)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, key=JWT_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt

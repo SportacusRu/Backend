@@ -21,16 +21,16 @@ VERIFY_ENDPOINT = config("VERIFY_ENDPOINT")
 VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html", encoding='utf-8').read()
 UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html", encoding='utf-8').read()
 
-PLACES_FILTERS = set(
+PLACES_FILTERS = set([
     "турники", "брусья", "велотренажер", "шагомер",
     "степпер", "маятник", "лыжный тренажер", "твистер", "беговые дорожки", 
     "баскетбольное кольцо", "теннисный стол", "площадка для большого тенниса",
     "футбольные ворота", "хоккейный корт", "жим сидя от груди",
     "жим ногами", "гребля", "сгибание ног", "волейбольная сетка",
     "вертикальная тяга", "гиперэкстензия", "лыжная трасса", "каток"
-)
+])
 
-PLACE_CATEGORIES = set(
+PLACE_CATEGORIES = set([
     "уличные тренажеры", "спортивные игры",
     "воркаут", "бег", "зимние виды спорта",
-)
+])
