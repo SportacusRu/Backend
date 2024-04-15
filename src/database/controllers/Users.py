@@ -82,7 +82,7 @@ class UsersController(BaseController):
         :return: str
         """
         user = await UsersController.find_by_id(user_id)
-        hashed = hashpw(bytes(user.password), gensalt())
+        hashed = hashpw(bytes(user.password.encode()), gensalt())
         user.verify_link = hashed.decode().replace("/", "").replace(".", "")[7:]
 
         await user.save()

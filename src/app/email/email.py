@@ -1,6 +1,5 @@
 from aiosmtplib import SMTP
 from email.mime.text import MIMEText
-
 from jinja2 import Template
 
 
