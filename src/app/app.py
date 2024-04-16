@@ -3,7 +3,7 @@ from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.app.api.router import api_router
-from src.app.middlewares import BlockMiddleware, ModeratorAuthMiddleware
+from src.app.middlewares import ModeratorAuthMiddleware
 from src.app.config import config
 
 from src.database import Database
@@ -32,8 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.add_middleware(BlockMiddleware)
 app.add_middleware(ModeratorAuthMiddleware)
 
 app.include_router(api_router)

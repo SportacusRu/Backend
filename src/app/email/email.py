@@ -34,7 +34,7 @@ class EmailSender:
 
     @staticmethod
     async def send_update_password(email: str, password_link: str) -> None:
-        updatePasswordHTML = await updatePassword.render_async(password_link=password_link)
+        updatePasswordHTML = await updatePassword.render_async(link=password_link)
 
         await EmailSender.send(
             email, "Ссылка на изменение пароля", updatePasswordHTML

@@ -1,2 +1,1 @@
-from .BlockMiddleware import BlockMiddleware
 from .ModeratorAuthMiddleware import ModeratorAuthMiddleware
