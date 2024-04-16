@@ -46,7 +46,7 @@ async def add(
     if not check:
         return HTTPException(
             status.HTTP_400_BAD_REQUEST, 
-            detail="Some of fields aren't valid: title, geo, description, category or filters"
+            content="Some of fields aren't valid: title, geo, description, category or filters"
         )
 
     await Database.places.add(

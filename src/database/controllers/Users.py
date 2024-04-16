@@ -71,6 +71,17 @@ class UsersController(BaseController):
         """
         return await UsersDocument.find_one(UsersDocument.email == email)
 
+    @staticmethod
+    async def find_by_verify_key(verify_key: str) -> Union[UsersDocument, None]:
+        """
+        Get user by verify key
+
+        :param verify_key: User verify key
+        :type: verify_key: str
+        :return: Union[UsersDocument, None]
+        """
+        return await UsersDocument.find_one(UsersDocument.verify_link == verify_key)
+
 
     @staticmethod
     async def get_verify_link(user_id: int) -> str:

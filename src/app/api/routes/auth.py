@@ -19,14 +19,14 @@ async def register(name: str, email: str, password: str) -> Any:
     if not(valid_check):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No valid fields: name, email or password"
+            content="No valid fields: name, email or password"
         )
     user = await Database.users.find_by_email(email)
 
     if user is not None and user.auth_key is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
+            content="Email already registered"
         )
     elif user is not None:
         await Database.users.remove(user.user_id)
@@ -47,19 +47,19 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> T
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect email or password"
+            content="Incorrect email or password"
         )
 
     if not checkpw(form_data.password.encode(), user.password.encode()):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Incorrect email or password"
+            content="Incorrect email or password"
         )
 
     if user.auth_key is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email not verified"
+            content="Email not verified"
         )
 
     return create_token(user)
@@ -72,23 +72,23 @@ async def validate_code_confirm(request: Request, email: str, code: int) -> Resp
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User not found"
+            content="User not found"
         )
 
     if user.email_code is not None and user.email_code != code:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Wrong code"
+            content="Wrong code"
         )
     elif user.email_code is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Code already sent"
+            content="Code already sent"
         )
     elif user.email_code is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Code not found"
+            content="Code not found"
         )
     
     if user.email_code == code and user.auth_key == request.cookies.get("auth_key"):
@@ -107,19 +107,19 @@ async def repeat_code_confirm(request: Request, email: str) -> Any:
     if user is None: 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User not found"
+            content="User not found"
         )
     
     if auth_key is None and user.auth_key != auth_key:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Auth key not found or expired"
+            content="Auth key not found or expired"
         )
     
     if user.email_code is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Code not found"
+            content="Code not found"
         )
     
     user.email_code = randint(1000, 9999)

@@ -67,18 +67,18 @@ async def update_password(
 
 @router.post("/setNewPassword", description="Update password of user")
 async def set_new_password(
-    current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     verify_key: str, password: str, 
 ):
-    user = await Database.users.find_by_id(current_user.user_id)
+    user = await Database.users.find_by_verify_key(verify_key)
 
-    if user.verify_link == verify_key:
+    if user:
         hashed_password = hashpw(password.encode(), gensalt()).decode()
         user.password = hashed_password
+        user.verify_link = None
         await user.save()
         return Response(status_code=status.HTTP_200_OK)
 
-    return Response(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong link")
+    return Response(status_code=status.HTTP_400_BAD_REQUEST, content="Wrong link")
     
 
 @router.post("/ban", description="Ban user (special method)")
