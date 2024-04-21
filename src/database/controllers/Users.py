@@ -35,7 +35,7 @@ class UsersController(BaseController):
         user = await UsersController.find_by_id(user_id)
         
         getattr(user, first_list).add(place_id)
-        if place_id in user.like_list:
+        if place_id in getattr(user, second_list):
             getattr(user, second_list).remove(place_id)
 
         await user.save()

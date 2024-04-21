@@ -3,7 +3,9 @@ from http.client import HTTPException
 from typing import Any, List, Union
 from typing_extensions import Annotated
 from fastapi import APIRouter, Response, Depends, status
+from random import shuffle
 
+from src.app.api.models.places import PlacesGet
 from src.database.models.Places import PlacesDocument
 from src.app.api.extensions.validate import validate_place_title, validate_review_text, validate_place_category, validate_place_filters
 from src.database.models.Users import UsersDocument
@@ -14,9 +16,17 @@ router = APIRouter()
 
 
 @router.get("/get", description="Get list of places")
-async def get() -> List[PlacesDocument]:
+async def get() -> List[PlacesGet]:
     places = await Database.places.get_all()
-    return places
+    new_places = list()
+    for place in places:
+        reviews = list([await Database.reviews.find_by_id(review_id) for review_id in place.reviews_list])
+        rating_sum = sum(review.grade for review in reviews)
+        if len(reviews) > 0:
+            last_element = reviews[-1]
+            current_photo = last_element.photos[0]
+            new_places.append(PlacesGet(**place.dict(), preview=current_photo, rating=rating_sum/len(reviews)))
+    return new_places
 
 
 @router.get("/getById", description="Get information about place")
@@ -28,9 +38,22 @@ async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
 @router.get("/getRecommendedPlace", description="Get recommended place")
 async def get_recommended_place(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
-) -> Any: 
-    return ""
+) -> Any:
+    liked_places = current_user.like_list
+    disliked_places = current_user.dislike_list
+    places = await Database.places.get_all()
+    if len(places) <= 0:
+        return None
 
+    if len(liked_places) > 0 or len(disliked_places) > 0:
+        filtered_places = [place for place in places if (place.place_id not in disliked_places) and (place.place_id not in liked_places)]
+        if len(filtered_places) > 0:
+            shuffle(filtered_places)
+            return filtered_places[0]
+        return None
+    else:
+        shuffle(places)
+        return places[0]
 
 @router.post("/add", description="Add a new place")
 async def add(

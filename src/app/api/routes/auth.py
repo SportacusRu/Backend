@@ -35,9 +35,7 @@ async def register(name: str, email: str, password: str) -> Any:
     user = await Database.users.add(name, password, email)
     await EmailSender.send_verification_code(email, user.email_code)
 
-    return Response(status_code=200, headers={
-        "Set-Cookie": f"auth_key={user.auth_key}; path=/; httponly"
-    })
+    return user.auth_key
     
 
 @router.post("/login", description="Authorizes the user")
@@ -66,7 +64,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> T
 
 
 @router.post("/validateCodeConfirm", description="Validate a code")
-async def validate_code_confirm(request: Request, email: str, code: int) -> Response: 
+async def validate_code_confirm(email: str, code: int, auth_key: str) -> Response:
     user = await Database.users.find_by_email(email)
 
     if user is None:
@@ -91,7 +89,7 @@ async def validate_code_confirm(request: Request, email: str, code: int) -> Resp
             content="Code not found"
         )
     
-    if user.email_code == code and user.auth_key == request.cookies.get("auth_key"):
+    if user.email_code == code and user.auth_key == auth_key:
         user.auth_key = None
         user.email_code = None
         await user.save()
@@ -100,8 +98,7 @@ async def validate_code_confirm(request: Request, email: str, code: int) -> Resp
 
 
 @router.post("/repeatCodeConfirm", description="Repeat a code")
-async def repeat_code_confirm(request: Request, email: str) -> Any: 
-    auth_key = request.cookies.get("auth_key")
+async def repeat_code_confirm(email: str, auth_key: str) -> Any:
     user = await Database.users.find_by_email(email)
 
     if user is None: 

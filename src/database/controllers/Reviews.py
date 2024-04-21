@@ -1,3 +1,5 @@
+import datetime
+
 from src.database.models import ReviewsDocument, PlacesDocument
 from typing import List, Union
 
@@ -96,7 +98,8 @@ class ReviewsController(BaseController):
             place_id=place_id,
             description=description,
             photos=photos,
-            grade=grade
+            grade=grade,
+            created_at=datetime.datetime.today().strftime("%d.%m.%Y"),
         )
         await review.insert()
 

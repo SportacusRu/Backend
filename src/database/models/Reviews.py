@@ -9,3 +9,4 @@ class ReviewsDocument(Document):
     description: str
     photos: List[str]
     grade: int
+    created_at: str
