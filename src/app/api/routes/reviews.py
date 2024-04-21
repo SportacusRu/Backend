@@ -18,7 +18,7 @@ async def get_by_place_id(place_id: int) -> List[ReviewsGet]:
     for review in reviews:
         current_user = await Database.users.find_by_id(review.user_id)
         new_reviews.append(ReviewsGet(
-            **review.dict(), user_photo=current_user.photo, user_name=current_user.name
+            **review.model_dump(), user_photo=current_user.photo, user_name=current_user.name
         ))
     return new_reviews
 
