@@ -12,16 +12,12 @@ router = APIRouter()
 
 @router.get("/getByPlaceId", description="Get reviews by place_id")
 async def get_by_place_id(place_id: int) -> List[ReviewsGet]:
-    current_place = await Database.reviews.get_all(place_id)
-    reviews_ids = current_place.reviews_list
+    reviews = await Database.reviews.get_all(place_id)
 
-    reviews = []
-
-    for review_id in reviews_ids:
-        current_review = await Database.reviews.find_by_id(review_id)
-        current_user = await Database.users.find_by_id(current_review.user_id)
+    for review in reviews:
+        current_user = await Database.users.find_by_id(review.user_id)
         reviews.append(ReviewsGet(
-            **current_review, user_photo=current_user.photo, user_name=current_user.name
+            **review, user_photo=current_user.photo, user_name=current_user.name
         ))
     return reviews
 
