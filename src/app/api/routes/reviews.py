@@ -21,7 +21,7 @@ async def get_by_place_id(place_id: int) -> List[ReviewsGet]:
         current_review = await Database.reviews.find_by_id(review_id)
         current_user = await Database.users.find_by_id(current_review.user_id)
         reviews.append(ReviewsGet(
-            **current_review, user_photo=current_user.photo, user_id=current_user.name
+            **current_review, user_photo=current_user.photo, user_name=current_user.name
         ))
     return reviews
 
