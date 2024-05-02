@@ -1,6 +1,6 @@
 from http.client import HTTPException
 
-from typing import Any, List, Union
+from typing import Any, List, Optional, Union
 from typing_extensions import Annotated
 from fastapi import APIRouter, Response, Depends, status
 from random import shuffle
@@ -18,6 +18,7 @@ router = APIRouter()
 @router.get("/get", description="Get list of places")
 async def get() -> List[PlacesGet]:
     places = await Database.places.get_all()
+    
     new_places = list()
     for place in places:
         reviews = list([await Database.reviews.find_by_id(review_id) for review_id in place.reviews_list])
@@ -25,14 +26,23 @@ async def get() -> List[PlacesGet]:
         if len(reviews) > 0:
             last_element = reviews[-1]
             current_photo = last_element.photos[0]
-            new_places.append(PlacesGet(**place.dict(), preview=current_photo, rating=rating_sum/len(reviews)))
+            new_places.append(PlacesGet(**place.model_dump(), preview=current_photo, rating=rating_sum/len(reviews)))
     return new_places
 
 
 @router.get("/getById", description="Get information about place")
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
     current_place = await Database.places.find_by_id(place_id)
-    return current_place
+    reviews = list([await Database.reviews.find_by_id(review_id) for review_id in current_place.reviews_list])
+    rating = sum(review.grade for review in reviews) / len(reviews)
+
+    
+    return PlacesGet(
+        **current_place.model_dump(), 
+        reviews_list=reviews,
+        rating=rating, 
+        preview=reviews[-1].photos[0]
+    )
 
 
 @router.get("/getRecommendedPlace", description="Get recommended place")
@@ -41,7 +51,7 @@ async def get_recommended_place(
 ) -> Any:
     liked_places = current_user.like_list
     disliked_places = current_user.dislike_list
-    places = await Database.places.get_all()
+    places = await get()
     if len(places) <= 0:
         return None
 

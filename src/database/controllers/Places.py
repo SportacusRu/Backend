@@ -37,7 +37,7 @@ class PlacesController(BaseController):
         return await PlacesDocument.find_all().to_list()
     
     @staticmethod
-    async def filter(filters_list: MutableSet[int], category: str) -> List[PlacesDocument]:
+    async def filter(filters_list: List[int], category: str) -> List[PlacesDocument]:
         """
         Return a filtered places
 

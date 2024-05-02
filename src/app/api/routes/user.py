@@ -1,8 +1,9 @@
 from typing import Any
 from bcrypt import gensalt, hashpw
 from typing_extensions import Annotated
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Form, Response, status
 
+from src.app.api.models.places import PlacesGet
 from src.app.api.models.users import UserGet
 from src.app.config.config import VERIFY_ENDPOINT
 from src.app.email.email import EmailSender
@@ -22,8 +23,16 @@ async def get(
     places = []
     
     for place_id in current_user.like_list: 
-        places.add(
-            await Database.places.find_by_id(place_id)
+        current_place = await Database.places.find_by_id(place_id)
+        current_reviews = list([await Database.reviews.find_by_id(review_id) for review_id in current_place.reviews_list])
+        rating = sum(review.grade for review in current_reviews) / len(current_reviews)
+
+        places.append(
+            PlacesGet(
+                **current_place.model_dump(), 
+                rating=rating, 
+                preview=current_reviews[-1].photos[0]
+            )
         )
 
     return UserGet(
@@ -38,7 +47,7 @@ async def get(
 @router.post("/updatePhoto", description="Update photo of user")
 async def update_photo(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
-    photo: str
+    photo: Annotated[str, Form()]
 ) -> Any: 
     current_user.photo = photo
     await current_user.save()
