@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, Response
 from src.app.api.extensions.auth import get_current_active_user
@@ -41,10 +41,10 @@ async def get(moderator_key: str) -> Any:
 
 @router.post("/add", description="Add a new complaint")
 async def add(
-    data: str, 
-    review_id: Optional[int], 
-    place_id: Optional[int], 
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
+    data: str, 
+    review_id: int = None, 
+    place_id: int = None, 
 ) -> Response:
     await Database.complaints.add(
         current_user.user_id,
