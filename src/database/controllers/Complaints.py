@@ -70,7 +70,8 @@ class ComplaintsController:
             user_id=user_id, 
             data=data, 
             review_id=review_id, 
-            place_id=place_id
+            place_id=place_id,
+            report=None
         )
 
         await complaint.insert()
