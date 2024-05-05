@@ -1,6 +1,6 @@
 from typing import List
 from typing_extensions import Annotated
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Form, Response
 from src.app.api.extensions.validate import validate_grade, validate_review_text
 from src.app.api.models.reviews import ReviewsGet, ReviewsDocument
 from src.database.models.Users import UsersDocument
@@ -34,9 +34,8 @@ async def get_by_user(
 @router.post("/add", description="Add a new review")
 async def add_review(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
-    place_id: int, description: str, photos: str, grade: int
+    place_id: int, description: str, photos: Annotated[str, Form()], grade: int
 ) -> Response:
-    print(validate_grade(grade))
     if not (validate_grade(grade)
         or validate_review_text(description)
         or await Database.places.find_by_id(place_id) is None):
@@ -46,7 +45,7 @@ async def add_review(
         current_user.user_id,
         place_id,
         description,
-        photos.split(","),
+        photos.split("|||"),
         grade
     )
     return Response(status_code=200)

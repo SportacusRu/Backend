@@ -167,7 +167,7 @@ all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)"
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -387,7 +387,7 @@ python-versions = ">=3.8"
 name = "uvicorn"
 version = "0.29.0"
 description = "The lightning-fast ASGI server."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.8"
 
@@ -402,7 +402,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8a314a948bf01aaf1584197b21b5896735293e641f38c593f91fc2b09927afd8"
+content-hash = "b66acc9e36289d5f41ffdadc85a37ae2913566a4c359f32be808ab3d91b3dbe1"
 
 [metadata.files]
 aiosmtplib = []

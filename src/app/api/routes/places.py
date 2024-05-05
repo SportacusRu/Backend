@@ -26,7 +26,8 @@ async def get() -> List[PlacesGet]:
         if len(reviews) > 0:
             last_element = reviews[-1]
             current_photo = last_element.photos[0]
-            new_places.append(PlacesGet(**place.model_dump(), preview=current_photo, rating=rating_sum/len(reviews)))
+            new_places.append(PlacesGet(**place.model_dump(), preview=current_photo, 
+                                        rating=round(rating_sum/len(reviews))))
     return new_places
 
 
@@ -34,12 +35,10 @@ async def get() -> List[PlacesGet]:
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
     current_place = await Database.places.find_by_id(place_id)
     reviews = list([await Database.reviews.find_by_id(review_id) for review_id in current_place.reviews_list])
-    rating = sum(review.grade for review in reviews) / len(reviews)
+    rating = round(sum(review.grade for review in reviews) / len(reviews))
 
-    
     return PlacesGet(
         **current_place.model_dump(), 
-        reviews_list=reviews,
         rating=rating, 
         preview=reviews[-1].photos[0]
     )
@@ -82,12 +81,12 @@ async def add(
             content="Some of fields aren't valid: title, geo, description, category or filters"
         )
 
-    await Database.places.add(
+    place = await Database.places.add(
         current_user.user_id, 
         title, geo, description,
         category, filters_list
     )
-    return Response(status_code=200)
+    return place.place_id
 
 
 @router.post("/remove", description="remove place (special method)")
