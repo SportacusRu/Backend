@@ -1,6 +1,8 @@
 from beanie import Document
 from typing import List
 
+from pydantic import BaseModel
+
 
 class ReviewsDocument(Document): 
     user_id: int
@@ -10,3 +12,6 @@ class ReviewsDocument(Document):
     photos: List[str]
     grade: int
     created_at: str
+
+class ReviewsView(BaseModel):
+    grade: int

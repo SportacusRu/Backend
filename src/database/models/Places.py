@@ -1,5 +1,5 @@
 from beanie import Document
-from typing import MutableSet
+from typing import MutableSet, List
 
 
 class PlacesDocument(Document): 
@@ -8,6 +8,6 @@ class PlacesDocument(Document):
     title: str
     geo: str
     description: str
-    reviews_list: MutableSet[int]
+    reviews_list: List[int]
     category: str
     filters_list: MutableSet[str]

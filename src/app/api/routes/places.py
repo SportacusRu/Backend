@@ -1,6 +1,6 @@
 from http.client import HTTPException
 
-from typing import Any, List, Optional, Union
+from typing import Any, List, Union
 from typing_extensions import Annotated
 from fastapi import APIRouter, Response, Depends, status
 from random import shuffle
@@ -21,15 +21,28 @@ async def get() -> List[PlacesGet]:
     
     new_places = list()
     for place in places:
-        reviews = list([await Database.reviews.find_by_id(review_id) for review_id in place.reviews_list])
-        rating_sum = sum(review.grade for review in reviews)
-        if len(reviews) > 0:
-            last_element = reviews[-1]
-            current_photo = last_element.photos[0]
-            new_places.append(PlacesGet(**place.model_dump(), preview=current_photo, 
-                                        rating=round(rating_sum/len(reviews))))
+        ratings = await Database.reviews.get_grade_by_place_id(place.place_id)
+        rating_sum = sum(rating.grade for rating in ratings)
+        if len(ratings) > 0:
+            new_places.append(
+                PlacesGet(
+                    **place.model_dump(), 
+                    rating=round(rating_sum/len(ratings))
+                )
+            )
     return new_places
 
+@router.get("/getPreview", description="Get preview of place")
+async def get_preview(place_id: int) -> str:
+    place = await Database.places.find_by_id(place_id)
+    if place is None or len(place.reviews_list) < 1:
+        return None
+    
+    last_element = place.reviews_list[-1]
+    last_review = await Database.reviews.find_by_id(last_element)
+    current_photo = last_review.photos[0]
+
+    return current_photo
 
 @router.get("/getById", description="Get information about place")
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:

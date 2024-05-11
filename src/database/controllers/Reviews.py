@@ -1,6 +1,6 @@
 import datetime
 
-from src.database.models import ReviewsDocument, PlacesDocument
+from src.database.models import ReviewsDocument, PlacesDocument, ReviewsView
 from typing import List, Union
 
 from .BaseController import BaseController
@@ -47,6 +47,12 @@ class ReviewsController(BaseController):
         :return: List[ReviewsDocument]
         """
         return await ReviewsDocument.find(ReviewsDocument.user_id == user_id).to_list()
+
+    @staticmethod 
+    async def get_grade_by_place_id(place_id: int) -> List[ReviewsView]:
+        return await ReviewsDocument.find(ReviewsDocument.place_id == place_id).project(
+            ReviewsView
+        ).to_list()
 
     @staticmethod
     async def remove(review_id: int) -> None:
