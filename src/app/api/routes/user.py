@@ -51,7 +51,7 @@ async def get(
         email=current_user.email,
         like_list=places,
         reviews_list=reviews_without_photo,
-        photo=None
+        photo=None if current_user.photo is not None else "Not Found"
     )
 
 @router.get("/getPhoto", description="Get user photo")
