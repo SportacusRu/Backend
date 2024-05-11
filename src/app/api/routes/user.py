@@ -1,3 +1,4 @@
+from base64 import b64decode
 from typing import Any
 from bcrypt import gensalt, hashpw
 from typing_extensions import Annotated
@@ -50,8 +51,19 @@ async def get(
         email=current_user.email,
         like_list=places,
         reviews_list=reviews_without_photo,
-        photo=current_user.photo
+        photo=None
     )
+
+@router.get("/getPhoto", description="Get user photo")
+async def get_photo(
+    current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
+) -> UserGet: 
+    photo = current_user.photo
+    if photo is None:
+        return None
+
+    return Response(content=b64decode(photo[23:]), media_type="image/jpeg")
+    
 
 @router.post("/updatePhoto", description="Update photo of user")
 async def update_photo(
