@@ -2,6 +2,7 @@ from http.client import HTTPException
 
 from typing import Any, List, Union
 from typing_extensions import Annotated
+from fastapi.responses import FileResponse
 from fastapi import APIRouter, Response, Depends, status
 from random import shuffle
 
@@ -11,6 +12,7 @@ from src.app.api.extensions.validate import validate_place_title, validate_revie
 from src.database.models.Users import UsersDocument
 from src.app.api.extensions.auth import get_current_active_user
 from src.database import Database
+from base64 import b64decode
 
 router = APIRouter()
 
@@ -32,8 +34,11 @@ async def get() -> List[PlacesGet]:
             )
     return new_places
 
-@router.get("/getPreview", description="Get preview of place")
-async def get_preview(place_id: int) -> str:
+@router.get(
+    "/getPreview", description="Get preview of place", 
+    response_class=FileResponse
+)
+async def get_preview(place_id: int) -> Response:
     place = await Database.places.find_by_id(place_id)
     if place is None or len(place.reviews_list) < 1:
         return None
@@ -42,7 +47,7 @@ async def get_preview(place_id: int) -> str:
     last_review = await Database.reviews.find_by_id(last_element)
     current_photo = last_review.photos[0]
 
-    return current_photo
+    return Response(content=b64decode(current_photo[23:]), media_type="image/jpeg")
 
 @router.get("/getById", description="Get information about place")
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
