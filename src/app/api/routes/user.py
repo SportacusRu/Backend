@@ -24,14 +24,13 @@ async def get(
     
     for place_id in current_user.like_list: 
         current_place = await Database.places.find_by_id(place_id)
-        current_reviews = list([await Database.reviews.find_by_id(review_id) for review_id in current_place.reviews_list])
-        rating = round(sum(review.grade for review in current_reviews) / len(current_reviews))
+        ratings = await Database.reviews.get_grade_by_place_id(current_place.place_id)
+        rating_sum = sum(rating.grade for rating in ratings)
 
         places.append(
             PlacesGet(
                 **current_place.model_dump(), 
-                rating=rating, 
-                preview=current_reviews[-1].photos[0]
+                rating=rating_sum/len(ratings) if len(ratings) > 0 else 0, 
             )
         )
 

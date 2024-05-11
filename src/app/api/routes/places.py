@@ -52,13 +52,12 @@ async def get_preview(place_id: int) -> Response:
 @router.get("/getById", description="Get information about place")
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:
     current_place = await Database.places.find_by_id(place_id)
-    reviews = list([await Database.reviews.find_by_id(review_id) for review_id in current_place.reviews_list])
-    rating = round(sum(review.grade for review in reviews) / len(reviews))
+    ratings = await Database.reviews.get_grade_by_place_id(current_place.place_id)
+    rating_sum = sum(rating.grade for rating in ratings)
 
     return PlacesGet(
         **current_place.model_dump(), 
-        rating=rating, 
-        preview=reviews[-1].photos[0]
+        rating=rating_sum/len(ratings) if len(ratings) > 0 else 0, 
     )
 
 
