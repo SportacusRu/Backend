@@ -56,9 +56,10 @@ async def get(
 
 @router.get("/getPhoto", description="Get user photo")
 async def get_photo(
-    current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
+    user_id: int,
 ) -> UserGet: 
-    photo = current_user.photo
+    user = await Database.users.find_by_id(user_id)
+    photo = user.photo
     if photo is None:
         return None
 
