@@ -3,6 +3,7 @@ from bcrypt import gensalt, hashpw
 from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, Form, Response, status
 
+from src.database.models.Reviews import ReviewsDocument
 from src.app.api.models.places import PlacesGet
 from src.app.api.models.users import UserGet
 from src.app.config.config import VERIFY_ENDPOINT
@@ -20,6 +21,15 @@ async def get(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
 ) -> UserGet: 
     reviews = await Database.reviews.find_by_user_id(current_user.user_id)
+    reviews_without_photo = [ReviewsDocument(
+        user_id=r.user_id,
+        review_id=r.review_id,
+        place_id=r.place_id,
+        description=r.description,
+        photos=[],
+        grade=r.grade,
+        created_at=r.created_at
+    ) for r in reviews]
     places = []
     
     for place_id in current_user.like_list: 
@@ -39,7 +49,7 @@ async def get(
         name=current_user.name,
         email=current_user.email,
         like_list=places,
-        reviews_list=reviews,
+        reviews_list=reviews_without_photo,
         photo=current_user.photo
     )
 
