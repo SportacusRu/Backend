@@ -64,6 +64,8 @@ async def get_photo(
     if photo is None:
         return FileResponse(path=USER_PHOTO_PATH, media_type="image/jpeg")
 
+    if (photo.startswith("data:image/png")): 
+        return Response(content=b64decode(photo[22:]), media_type="image/png")
     return Response(content=b64decode(photo[23:]), media_type="image/jpeg")
     
 
