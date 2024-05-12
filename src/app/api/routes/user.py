@@ -1,13 +1,14 @@
 from base64 import b64decode
 from typing import Any
 from bcrypt import gensalt, hashpw
+from fastapi.responses import FileResponse
 from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, Form, Response, status
 
 from src.database.models.Reviews import ReviewsDocument
 from src.app.api.models.places import PlacesGet
 from src.app.api.models.users import UserGet
-from src.app.config.config import USER_PHOTO, VERIFY_ENDPOINT
+from src.app.config.config import USER_PHOTO_PATH, VERIFY_ENDPOINT
 from src.app.email.email import EmailSender
 from src.app.api.extensions.auth import get_current_active_user
 from src.database.models.Users import UsersDocument
@@ -61,7 +62,7 @@ async def get_photo(
     user = await Database.users.find_by_id(user_id)
     photo = user.photo
     if photo is None:
-        return Response(content=USER_PHOTO, media_type="image/jpeg")
+        return FileResponse(path=USER_PHOTO_PATH, media_type="image/jpeg")
 
     return Response(content=b64decode(photo[23:]), media_type="image/jpeg")
     
