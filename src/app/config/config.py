@@ -21,6 +21,8 @@ VERIFY_ENDPOINT = config("VERIFY_ENDPOINT")
 VERIFICATION_CODE_HTML = open("src/app/templates/verification_code.html", encoding='utf-8').read()
 UPDATE_PASSWORD_HTML = open("src/app/templates/update_password.html", encoding='utf-8').read()
 
+USER_PHOTO = open("src/app/api/assets/user.jpg", encoding='utf-8').read()
+
 PLACES_FILTERS = (
     "турники", "брусья", "велотренажер", "шагомер",
     "степпер", "маятник", "лыжный тренажер", "твистер", "беговые дорожки", 

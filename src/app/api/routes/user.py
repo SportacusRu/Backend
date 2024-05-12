@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Form, Response, status
 from src.database.models.Reviews import ReviewsDocument
 from src.app.api.models.places import PlacesGet
 from src.app.api.models.users import UserGet
-from src.app.config.config import VERIFY_ENDPOINT
+from src.app.config.config import USER_PHOTO, VERIFY_ENDPOINT
 from src.app.email.email import EmailSender
 from src.app.api.extensions.auth import get_current_active_user
 from src.database.models.Users import UsersDocument
@@ -51,7 +51,7 @@ async def get(
         email=current_user.email,
         like_list=places,
         reviews_list=reviews_without_photo,
-        photo=None if current_user.photo is not None else "Not Found"
+        photo=None
     )
 
 @router.get("/getPhoto", description="Get user photo")
@@ -61,7 +61,7 @@ async def get_photo(
     user = await Database.users.find_by_id(user_id)
     photo = user.photo
     if photo is None:
-        return None
+        return Response(content=USER_PHOTO, media_type="image/jpeg")
 
     return Response(content=b64decode(photo[23:]), media_type="image/jpeg")
     
