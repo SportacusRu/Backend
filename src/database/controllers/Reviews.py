@@ -111,7 +111,7 @@ class ReviewsController(BaseController):
 
         place = await PlacesController.find_by_id(place_id)
 
-        place.reviews_list.add(review.review_id)
+        place.reviews_list.append(review.review_id)
         await place.save()
 
         return review
