@@ -78,7 +78,7 @@ async def update_photo(
 ) -> Any: 
     image_bytes = BytesIO(get_bytes_from_base64(photo)[0])
     user_photo = b64encode(
-        make_thumbnail(image_bytes)
+        make_thumbnail(image_bytes).tobytes()
     )
     
     current_user.photo = user_photo
