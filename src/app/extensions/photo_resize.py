@@ -7,7 +7,7 @@ from .get_bytes import get_bytes_from_base64
 def make_thumbnail(photo, size=(512, 512)):
     buffer = BytesIO()
     photo_data = get_bytes_from_base64(photo)
-    img = Image.open(photo_data[0])
+    img = Image.open(BytesIO(photo_data[0]))
     width, height = img.size
     if width > height:
         ratio = width / size[0]

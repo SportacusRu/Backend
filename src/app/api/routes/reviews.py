@@ -46,10 +46,9 @@ async def add_review(
         return Response(status_code=400)
     
     for photo in photos.split("|||"):
-        image_bytes = BytesIO(b64decode(photo))
-        images_list.append(b64encode(
-            make_thumbnail(image_bytes)
-        ))
+        images_list.append(
+            make_thumbnail(photo)
+        )
     
     await Database.reviews.add(
         current_user.user_id,
