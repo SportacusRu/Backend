@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi import APIRouter, Response, Depends, status
 from random import shuffle
 
+from src.app.extensions import get_bytes_from_base64
 from src.app.api.models.places import PlacesGet
 from src.database.models.Places import PlacesDocument
 from src.app.api.extensions.validate import validate_place_title, validate_review_text, validate_place_category, validate_place_filters
@@ -47,9 +48,8 @@ async def get_preview(place_id: int) -> Response:
     last_review = await Database.reviews.find_by_id(last_element)
     current_photo = last_review.photos[0]
 
-    if (current_photo.startswith("data:image/png")): 
-        return Response(content=b64decode(current_photo[22:]), media_type="image/png")
-    return Response(content=b64decode(current_photo[23:]), media_type="image/jpeg")
+    photo_byte = get_bytes_from_base64(current_photo)
+    return Response(content=photo_byte[0], media_type=photo_byte[1])
 
 @router.get("/getById", description="Get information about place")
 async def get_by_id(place_id: int) -> Union[PlacesDocument, None]:

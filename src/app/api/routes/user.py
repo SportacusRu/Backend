@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, Form, Response, status
 
+from src.app.extensions import get_bytes_from_base64
 from src.app.extensions import make_thumbnail
 from src.database.models.Reviews import ReviewsDocument
 from src.app.api.models.places import PlacesGet
@@ -66,9 +67,8 @@ async def get_photo(
     if photo is None:
         return FileResponse(path=USER_PHOTO_PATH, media_type="image/jpeg")
 
-    if (photo.startswith("data:image/png")): 
-        return Response(content=b64decode(photo[22:]), media_type="image/png")
-    return Response(content=b64decode(photo[23:]), media_type="image/jpeg")
+    photo_byte = get_bytes_from_base64(photo)
+    return Response(content=photo_byte[0], media_type=photo_byte[1])
     
 
 @router.post("/updatePhoto", description="Update photo of user")
@@ -76,7 +76,7 @@ async def update_photo(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     photo: Annotated[str, Form()]
 ) -> Any: 
-    image_bytes = BytesIO(b64decode(photo))
+    image_bytes = BytesIO(get_bytes_from_base64(photo)[0])
     user_photo = b64encode(
         make_thumbnail(image_bytes)
     )
