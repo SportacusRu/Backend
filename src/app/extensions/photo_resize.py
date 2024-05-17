@@ -22,5 +22,5 @@ def make_thumbnail(photo, size=(512, 512)):
     img.save(buffer, format=photo_data[1][6:].upper())
 
     byte_data = buffer.getvalue()
-    return b64encode(byte_data).decode('utf-8')
+    return "data:" + photo_data[1] + ";base64," + b64encode(byte_data).decode('utf-8')
      
