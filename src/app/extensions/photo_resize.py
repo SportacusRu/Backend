@@ -1,4 +1,5 @@
 from PIL import Image
+from PIL.Image import Resampling
  
 def make_thumbnail(filename, size=(512, 512)):
     img = Image.open(filename)
@@ -12,5 +13,5 @@ def make_thumbnail(filename, size=(512, 512)):
         new_width = int(width / ratio)
         new_size = (new_width, size[1])
  
-    img.thumbnail(new_size, Image.ANTIALIAS)
+    img.thumbnail(new_size, Resampling.LANCZOS)
     return img
