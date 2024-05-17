@@ -1,7 +1,7 @@
 from io import BytesIO
 from PIL import Image
 from PIL.Image import Resampling
-from . import get_bytes_from_base64
+from .get_bytes import get_bytes_from_base64
  
 def make_thumbnail(photo, size=(512, 512)):
     buffer = BytesIO()
