@@ -234,6 +234,22 @@ test = ["pytest (>=7)", "mockupdb", "tornado (>=5)", "aiohttp (!=3.8.6)", "motor
 zstd = ["pymongo[zstd] (>=4.5,<5)"]
 
 [[package]]
+name = "pillow"
+version = "10.3.0"
+description = "Python Imaging Library (Fork)"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.extras]
+docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-inline-tabs", "sphinx-removed-in", "sphinxext-opengraph"]
+fpx = ["olefile"]
+mic = ["olefile"]
+tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
+typing = ["typing-extensions"]
+xmp = ["defusedxml"]
+
+[[package]]
 name = "pyasn1"
 version = "0.6.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -402,7 +418,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b66acc9e36289d5f41ffdadc85a37ae2913566a4c359f32be808ab3d91b3dbe1"
+content-hash = "5d17de5bc443439e6a55a1a809681e76182a8e73f3f830bfa3d02d5d1f53f76a"
 
 [metadata.files]
 aiosmtplib = []
@@ -423,6 +439,7 @@ jinja2 = []
 lazy-model = []
 markupsafe = []
 motor = []
+pillow = []
 pyasn1 = []
 pydantic = []
 pydantic-core = []

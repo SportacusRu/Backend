@@ -1,0 +1,1 @@
+from .photo_resize import make_thumbnail

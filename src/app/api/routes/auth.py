@@ -47,7 +47,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> T
             status_code=status.HTTP_400_BAD_REQUEST,
             content="Email not verified"
         )
-
+    print(user.name)
     return create_token(user)
 
 

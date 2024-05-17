@@ -1,10 +1,12 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
+from io import BytesIO
 from typing import Any
 from bcrypt import gensalt, hashpw
 from fastapi.responses import FileResponse
 from typing_extensions import Annotated
 from fastapi import APIRouter, Depends, Form, Response, status
 
+from src.app.extensions import make_thumbnail
 from src.database.models.Reviews import ReviewsDocument
 from src.app.api.models.places import PlacesGet
 from src.app.api.models.users import UserGet
@@ -74,9 +76,13 @@ async def update_photo(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     photo: Annotated[str, Form()]
 ) -> Any: 
-    current_user.photo = photo
+    image_bytes = BytesIO(b64decode(photo))
+    user_photo = b64encode(
+        make_thumbnail(image_bytes)
+    )
+    
+    current_user.photo = user_photo
     await current_user.save()
-
     return Response(status_code=status.HTTP_200_OK)
 
 @router.post("/updateName", description="Update name of user")

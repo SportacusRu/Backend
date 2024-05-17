@@ -12,3 +12,4 @@ typing_extensions
 starlette~=0.36.3
 motor~=3.4.0
 jinja2
+Pillow

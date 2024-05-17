@@ -47,6 +47,8 @@ async def get_preview(place_id: int) -> Response:
     last_review = await Database.reviews.find_by_id(last_element)
     current_photo = last_review.photos[0]
 
+    if (current_photo.startswith("data:image/png")): 
+        return Response(content=b64decode(current_photo[22:]), media_type="image/png")
     return Response(content=b64decode(current_photo[23:]), media_type="image/jpeg")
 
 @router.get("/getById", description="Get information about place")
