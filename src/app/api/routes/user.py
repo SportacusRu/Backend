@@ -76,9 +76,8 @@ async def update_photo(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)],
     photo: Annotated[str, Form()]
 ) -> Any: 
-    user_photo = b64encode(
-        make_thumbnail(photo)
-    )
+    user_photo = make_thumbnail(photo)
+    
     
     current_user.photo = user_photo
     await current_user.save()
