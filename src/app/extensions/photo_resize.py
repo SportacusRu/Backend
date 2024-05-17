@@ -8,6 +8,7 @@ def make_thumbnail(photo, size=(512, 512)):
     buffer = BytesIO()
     photo_data = get_bytes_from_base64(photo)
     img = Image.open(BytesIO(photo_data[0]))
+    exif = img.getexif()
     width, height = img.size
     if width > height:
         ratio = width / size[0]
@@ -19,7 +20,7 @@ def make_thumbnail(photo, size=(512, 512)):
         new_size = (new_width, size[1])
 
     img.thumbnail(new_size, Resampling.LANCZOS)
-    img.save(buffer, format=photo_data[1][6:].upper())
+    img.save(buffer, format=photo_data[1][6:].upper(), exif=exif)
 
     byte_data = buffer.getvalue()
     return "data:" + photo_data[1] + ";base64," + b64encode(byte_data).decode('utf-8')
