@@ -7,8 +7,6 @@ from src.app.api.models.reviews import ReviewsGet, ReviewsDocument
 from src.database.models.Users import UsersDocument
 from src.app.api.extensions.auth import get_current_active_user
 from src.database import Database
-from base64 import b64decode, b64encode
-from io import BytesIO
 
 router = APIRouter()
 
