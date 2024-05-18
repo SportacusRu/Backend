@@ -115,3 +115,8 @@ class ReviewsController(BaseController):
         await place.save()
 
         return review
+    
+    @staticmethod
+    async def get_new_id() -> int:
+        return await ReviewsController._get_new_id(ReviewsDocument, "review_id")
+
