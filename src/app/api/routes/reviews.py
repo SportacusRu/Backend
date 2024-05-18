@@ -34,7 +34,7 @@ async def get_by_user(
     return reviews
 
 @router.get("/getNewId", description="Get new review id")
-async def get_by_user(
+async def get_new_id(
     current_user: Annotated[UsersDocument, Depends(get_current_active_user)]
 ) -> List[ReviewsDocument]:
     return await Database.reviews.get_new_id()
