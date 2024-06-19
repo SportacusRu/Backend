@@ -26,12 +26,12 @@ async def get(moderator_key: str) -> Any:
     ).complaint_count
 
     if complaint.review_id: 
-        typ = PLACE
-        item = await Database.places.find_by_id(complaint.review_id)
-    else: 
         typ = REVIEW
         item = await Database.reviews.find_by_id(complaint.review_id)
-
+    else: 
+        typ = PLACE
+        item = await Database.places.find_by_id(complaint.place_id)
+        
     return ComplaintGet(
         typ=typ, 
         item=item,

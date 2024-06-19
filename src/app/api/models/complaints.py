@@ -1,10 +1,9 @@
 from pydantic import BaseModel
-from typing import Union
-from src.database.models import PlacesDocument, ReviewsDocument
+from typing import Any
 
 
 class ComplaintGet(BaseModel):
     typ: str
-    item: Union[PlacesDocument, ReviewsDocument]
+    item: Any
     complaint_count: int
     data: str
